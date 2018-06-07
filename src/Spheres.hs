@@ -8,17 +8,17 @@ n' = 6
 n :: Double
 n = fromIntegral n'
 
-sidelength :: Double
-sidelength = 2 * sin (pi/n)
+halfside :: Double
+halfside = sin (pi/n)
 
 xI :: Double
-xI = (1+sidelength/2) / sin(pi/2-2*pi/n)
+xI = (1+halfside) / sin(pi/2-2*pi/n)
 
 xS :: Double
-xS = (1+sidelength/2) * cos(2*pi/n)
+xS = (1+halfside) * cos(2*pi/n)
 
 yS :: Double
-yS = (1+sidelength/2) * sin(2*pi/n)
+yS = (1+halfside) * sin(2*pi/n)
 
 k :: Double
 k = (xS-xI)*(xS-xI) + yS*yS
@@ -45,11 +45,10 @@ sphere frame i = ((cx,cy,0), radius)
   shift = pi/90
   beta = fromIntegral i * 2*pi/n + fromIntegral frame * shift
   pt = (cos beta, sin beta ,0)
-  halfs = sidelength/2
-  p1 = inversion $ point 0 0 halfs pt
-  p2 = inversion $ point (pi/2) 0 halfs pt
-  p3 = inversion $ point pi 0 halfs pt
-  p4 = inversion $ point 0 (pi/2) halfs pt
+  p1 = inversion $ point 0 0 halfside pt
+  p2 = inversion $ point (pi/2) 0 halfside pt
+  p3 = inversion $ point pi 0 halfside pt
+  p4 = inversion $ point 0 (pi/2) halfside pt
   ((cx,cy,_), radius) = circumsphere p1 p2 p3 p4
 
 spheres :: Int -> [(Point,Double)]

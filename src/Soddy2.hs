@@ -1,5 +1,6 @@
-module Soddy
+module Soddy2
   where
+import           Control.Concurrent (threadDelay)
 import           Data.IORef
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
@@ -71,6 +72,15 @@ keyboard rot1 rot2 rot3 zoom c _ = do
     _   -> return ()
   postRedisplay Nothing
 
+idle :: IORef Int -> IORef [((Double,Double,Double),Double)] -> IdleCallback
+idle frame nspheres = do
+  frame $~! (+1)
+  frame' <- get frame
+  let nspheres' = spheres frame'
+  writeIORef nspheres nspheres'
+  _ <- threadDelay 1000000
+  postRedisplay Nothing
+
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
@@ -100,5 +110,6 @@ main = do
                              zoom
   reshapeCallback $= Just (resize 0)
   keyboardCallback $= Just (keyboard rot1 rot2 rot3 zoom)
-  idleCallback $= Nothing
+  frame <- newIORef 0
+  idleCallback $= Just (idle frame nspheres')
   mainLoop

@@ -1,9 +1,13 @@
-module Soddy
+module Soddy3
   where
+import           Control.Monad                     (when)
+import qualified Data.ByteString                   as B
 import           Data.IORef
+import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Spheres
+import           Text.Printf
 
 white,black,red :: Color4 GLfloat
 white      = Color4    1    1    1    1
@@ -71,6 +75,17 @@ keyboard rot1 rot2 rot3 zoom c _ = do
     _   -> return ()
   postRedisplay Nothing
 
+idle :: IORef Int -> IORef [((Double,Double,Double),Double)] -> IdleCallback
+idle frame nspheres = do
+  frame $~! (+1)
+  frame' <- get frame
+  when (frame' <= 180) $ do
+    let nspheres' = spheres frame'
+    writeIORef nspheres nspheres'
+    let ppm = printf "ppm/pic%04d.ppm" frame'
+    (>>=) capturePPM (B.writeFile ppm)
+  postRedisplay Nothing
+
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
@@ -100,5 +115,6 @@ main = do
                              zoom
   reshapeCallback $= Just (resize 0)
   keyboardCallback $= Just (keyboard rot1 rot2 rot3 zoom)
-  idleCallback $= Nothing
+  frame <- newIORef 0
+  idleCallback $= Just (idle frame nspheres')
   mainLoop
