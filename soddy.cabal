@@ -1,0 +1,29 @@
+name:                soddy
+version:             0.1.0.0
+-- synopsis:
+-- description:
+homepage:            https://github.com/stla/soddy#readme
+license:             GPL-3
+author:              Stéphane Laurent
+maintainer:          laurent_step@yahoo.fr
+copyright:           2018 Stéphane Laurent
+category:            Web
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Spheres
+                     , Utils.Circumsphere
+  build-depends:       base >= 4.7 && < 5
+                     , OpenGL
+                     , GLUT
+                     , gl-capture
+                     , bytestring
+  default-language:    Haskell2010
+  ghc-options:         -Wall
+
+source-repository head
+  type:     git
+  location: https://github.com/stla/soddy

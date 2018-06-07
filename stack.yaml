@@ -1,0 +1,7 @@
+resolver: lts-11.12
+
+packages:
+- .
+
+extra-deps:
+- gl-capture-0.1.0.0
