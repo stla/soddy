@@ -33,7 +33,6 @@ display context zoom = do
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
   mapM_ (\(center,radius) -> preservingMatrix $ do
-                  -- print center
                   translate (toVector3 center)
                   materialDiffuse Front $= red
                   renderObject Solid $ Sphere' radius 60 60)

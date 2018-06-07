@@ -1,15 +1,23 @@
-module Soddy2
+module Soddy4
   where
-import           Control.Concurrent (threadDelay)
+import           Control.Monad                     (when)
+import qualified Data.ByteString                   as B
 import           Data.IORef
+import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Spheres
+import           Text.Printf
 
-white,black,red :: Color4 GLfloat
+white,black,c1,c2,c3,c4,c5,c6 :: Color4 GLfloat
 white      = Color4    1    1    1    1
 black      = Color4    0    0    0    1
-red        = Color4    1    0    0    1
+c1         = Color4 0.12 0.47 0.71    1
+c2         = Color4    1  0.5 0.05    1
+c3         = Color4 0.17 0.63 0.17    1
+c4         = Color4 0.84 0.15 0.16    1
+c5         = Color4 0.58  0.4 0.74    1
+c6         = Color4 0.55 0.34 0.29    1
 
 data Context = Context
     {
@@ -33,11 +41,11 @@ display context zoom = do
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
-  mapM_ (\(center,radius) -> preservingMatrix $ do
+  mapM_ (\((center,radius),col) -> preservingMatrix $ do
                   translate (toVector3 center)
-                  materialDiffuse Front $= red
+                  materialDiffuse Front $= col
                   renderObject Solid $ Sphere' radius 60 60)
-        nspheres
+        (zip nspheres [c1,c2,c3,c4,c5,c6])
   swapBuffers
   where
     toVector3 (x,y,z) = Vector3 x y z
@@ -75,9 +83,11 @@ idle :: IORef Int -> IORef [((Double,Double,Double),Double)] -> IdleCallback
 idle frame nspheres = do
   frame $~! (+1)
   frame' <- get frame
-  let nspheres' = spheres frame'
-  writeIORef nspheres nspheres'
-  _ <- threadDelay 1000000
+  when (frame' <= 180) $ do
+    let nspheres' = spheres frame'
+    writeIORef nspheres nspheres'
+    let ppm = printf "ppm/pic%04d.ppm" frame'
+    (>>=) capturePPM (B.writeFile ppm)
   postRedisplay Nothing
 
 main :: IO ()
