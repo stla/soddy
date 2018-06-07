@@ -48,7 +48,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 6 0 (-50+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 6 0 (-50+zoom)) (Vertex3 6 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -81,7 +81,7 @@ main = do
   materialAmbient FrontAndBack $= black
   lighting $= Enabled
   light (Light 0) $= Enabled
-  position (Light 0) $= Vertex4 (-60) 0 (-300) 1
+  position (Light 0) $= Vertex4 60 0 (-500) 1
   ambient (Light 0) $= white
   diffuse (Light 0) $= white
   specular (Light 0) $= white

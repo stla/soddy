@@ -30,6 +30,3 @@ circumsphere (x1,y1,z1) (x2,y2,z2) (x3,y3,z3) (x4,y4,z4) =
     cy = - dy/2/a
     cz = dz/2/a
     radius = sqrt ((cx-x1)*(cx-x1)+(cy-y1)*(cy-y1)+(cz-z1)*(cz-z1))
-
-testcs :: (Point, Double)
-testcs = circumsphere (1,0,0) (-1,0,0) (0,1,0) (0,0,2)
