@@ -53,3 +53,13 @@ sphere frame i = ((cx,cy,0), radius)
 
 spheres :: Int -> [(Point,Double)]
 spheres frame = map (sphere frame) [1..n']
+
+interiorSphere :: (Point, Double)
+interiorSphere = ((cx,0,0), radius)
+  where
+  pt = (0,0,0)
+  p1 = inversion $ point 0 0 (1-halfside) pt
+  p2 = inversion $ point (pi/2) 0 (1-halfside) pt
+  p3 = inversion $ point pi 0 (1-halfside) pt
+  p4 = inversion $ point 0 (pi/2) (1-halfside) pt
+  ((cx,_,_), radius) = circumsphere p1 p2 p3 p4
