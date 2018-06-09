@@ -6,4 +6,4 @@
 
 ![gfycat](https://thumbs.gfycat.com/TerribleWarmAlbatross-size_restricted.gif)
 
-![gfycat](https://thumbs.gfycat.com/ThatMildCougar-size_restricted.gif)
+![gfycat](https://thumbs.gfycat.com/PaltryEvilIberianlynx-size_restricted.gif)
