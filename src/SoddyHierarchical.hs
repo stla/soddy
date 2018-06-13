@@ -21,7 +21,7 @@ data Context = Context
 display :: Context -> IORef Double -> DisplayCallback
 display context zoom = do
   clear [ColorBuffer, DepthBuffer]
-  nspheres <- get (contextSpheres context)
+  spheres <- get (contextSpheres context)
   zoom' <- get zoom
   r1 <- get (contextRot1 context)
   r2 <- get (contextRot2 context)
@@ -36,7 +36,7 @@ display context zoom = do
                   translate (toVector3 center)
                   materialDiffuse Front $= red
                   renderObject Solid $ Sphere' radius 60 60)
-        nspheres
+        spheres
   swapBuffers
   where
     toVector3 (x,y,z) = Vector3 x y z
@@ -55,8 +55,10 @@ resize zoom s@(Size w h) = do
 
 keyboard :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -- rotations
          -> IORef GLdouble -- zoom
+         -> IORef Int -- depth
+         -> IORef [((Double,Double,Double),Double)]
          -> KeyboardCallback
-keyboard rot1 rot2 rot3 zoom c _ = do
+keyboard rot1 rot2 rot3 zoom depth spheres c _ = do
   case c of
     'e' -> rot1 $~! subtract 2
     'r' -> rot1 $~! (+2)
@@ -66,6 +68,14 @@ keyboard rot1 rot2 rot3 zoom c _ = do
     'i' -> rot3 $~! (+2)
     'm' -> zoom $~! (+1)
     'l' -> zoom $~! subtract 1
+    'h' -> do
+      depth $~! (+1)
+      depth' <- get depth
+      writeIORef spheres (hexlets depth')
+    'n' -> do
+      depth $~! (\n -> if n>1 then n-1 else n)
+      depth' <- get depth
+      writeIORef spheres (hexlets depth')
     'q' -> leaveMainLoop
     _   -> return ()
   postRedisplay Nothing
@@ -90,7 +100,9 @@ main = do
   rot2 <- newIORef 0.0
   rot3 <- newIORef 0.0
   zoom <- newIORef 0.0
-  let spheres = hexlets 3
+  let depth = 1
+      spheres = hexlets depth
+  depth' <- newIORef depth
   spheres' <- newIORef spheres
   displayCallback $= display Context {contextRot1 = rot1,
                                       contextRot2 = rot2,
@@ -98,6 +110,12 @@ main = do
                                       contextSpheres = spheres'}
                              zoom
   reshapeCallback $= Just (resize 0)
-  keyboardCallback $= Just (keyboard rot1 rot2 rot3 zoom)
+  keyboardCallback $= Just (keyboard rot1 rot2 rot3 zoom depth' spheres')
   idleCallback $= Nothing
+  putStrLn "*** Soddy's hierarchical hexlet ***\n\
+        \    To quit, press q.\n\
+        \    Scene rotation: e, r, t, y, u, i\n\
+        \    Zoom: l, m\n\
+        \    Increase/decrease depth: h,n\n\
+        \"
   mainLoop
