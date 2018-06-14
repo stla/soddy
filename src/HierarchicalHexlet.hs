@@ -41,6 +41,10 @@ hexlet (center, radius) = map (oneSphere center' radius) angles
   center' = toV3 center
   angles = [0.0, pi/3, 2*pi/3, pi, 4*pi/3, 5*pi/3]
 
+-- hexlets :: Int -> [(Point,Double)]
+-- hexlets n | n==1 = hexlet ((0, 0, 0), 1)
+--           | otherwise = concatMap hexlet (hexlets (n-1))
+
 hexlets :: Int -> [(Point,Double)]
-hexlets n | n==1 = hexlet ((0, 0, 0), 1)
+hexlets n | n==0 = [((0, 0, 0), 1)]
           | otherwise = concatMap hexlet (hexlets (n-1))

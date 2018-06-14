@@ -47,7 +47,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-5+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-3+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -73,7 +73,7 @@ keyboard rot1 rot2 rot3 zoom depth spheres c _ = do
       depth' <- get depth
       writeIORef spheres (hexlets depth')
     'n' -> do
-      depth $~! (\n -> if n>1 then n-1 else n)
+      depth $~! (\n -> if n>0 then n-1 else n)
       depth' <- get depth
       writeIORef spheres (hexlets depth')
     'q' -> leaveMainLoop
