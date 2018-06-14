@@ -51,5 +51,5 @@ hexlets :: Int -> Int -> Bool -> [(Point,Double)]
 hexlets n frame clockwise
   | n==0 = [((0, 0, 0), 1)]
   | otherwise = let nclockwise = not clockwise in
-                concatMap (hexlet frame nclockwise) 
+                concatMap (hexlet frame nclockwise)
                           (hexlets (n-1) frame nclockwise)

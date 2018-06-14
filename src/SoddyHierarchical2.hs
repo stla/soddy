@@ -1,9 +1,15 @@
 module SoddyHierarchical2
   where
+import           Control.Monad                     (when)
+import qualified Data.ByteString                   as B
 import           Data.IORef
+import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           HierarchicalHexlet2
+import           System.Directory                  (doesDirectoryExist)
+import           Text.Printf
+
 
 white,black,red :: Color4 GLfloat
 white      = Color4    1    1    1    1
@@ -57,9 +63,10 @@ keyboard :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -- rotations
          -> IORef GLdouble -- zoom
          -> IORef Int -- depth
          -> IORef Int -- "frame"
+         -> IORef Bool -- animation
          -> IORef [((Double,Double,Double),Double)]
          -> KeyboardCallback
-keyboard rot1 rot2 rot3 zoom depth frame spheres c _ = do
+keyboard rot1 rot2 rot3 zoom depth frame anim spheres c _ = do
   case c of
     'e' -> rot1 $~! subtract 2
     'r' -> rot1 $~! (+2)
@@ -90,8 +97,26 @@ keyboard rot1 rot2 rot3 zoom depth frame spheres c _ = do
       depth' <- get depth
       writeIORef spheres (hexlets depth' frame' True)
     'q' -> leaveMainLoop
+    'a' -> writeIORef anim True
+    's' -> writeIORef anim False
     _   -> return ()
   postRedisplay Nothing
+
+idle :: IORef Bool -> IORef Int -> IORef Int
+     -> IORef [((Double,Double,Double),Double)] -> IdleCallback
+idle anim depth frame spheres = do
+  anim' <- get anim
+  when anim' $ do
+    frame $~! (+1)
+    frame' <- get frame
+    depth' <- get depth
+    writeIORef spheres (hexlets depth' frame' True)
+    ppmExists <- doesDirectoryExist "./ppm"
+    when (ppmExists && frame' <= 30) $ do
+      let ppm = printf "ppm/pic%04d.ppm" frame'
+      (>>=) capturePPM (B.writeFile ppm)
+    postRedisplay Nothing
+  return ()
 
 main :: IO ()
 main = do
@@ -119,19 +144,22 @@ main = do
   depth' <- newIORef depth
   frame' <- newIORef frame
   spheres' <- newIORef spheres
+  anim <- newIORef False
   displayCallback $= display Context {contextRot1 = rot1,
                                       contextRot2 = rot2,
                                       contextRot3 = rot3,
                                       contextSpheres = spheres'}
                              zoom
   reshapeCallback $= Just (resize 0)
-  keyboardCallback $= Just (keyboard rot1 rot2 rot3 zoom depth' frame' spheres')
-  idleCallback $= Nothing
+  keyboardCallback $=
+    Just (keyboard rot1 rot2 rot3 zoom depth' frame' anim spheres')
+  idleCallback $= Just (idle anim depth' frame' spheres')
   putStrLn "*** Soddy's hierarchical hexlet ***\n\
         \    To quit, press q.\n\
         \    Scene rotation: e, r, t, y, u, i\n\
         \    Zoom: l, m\n\
-        \    Increase/decrease depth: h,n\n\
-        \    Rotate hexlets: g,b\n\
+        \    Increase/decrease depth: h, n\n\
+        \    Rotate hexlets: g, b\n\
+        \    Animation : a, s\n\
         \"
   mainLoop
