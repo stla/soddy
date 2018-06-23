@@ -30,6 +30,8 @@ library
                      , SoddyHierarchical
                      , HierarchicalHexlet2
                      , SoddyHierarchical2
+                     , HierarchicalSteiner3D
+                     , Steiner3D
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT
