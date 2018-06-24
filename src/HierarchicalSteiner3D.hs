@@ -9,32 +9,30 @@ fromV3 (V3 a b c) = (a, b, c)
 toV3 :: Point -> V3 Double
 toV3 (a, b, c) = V3 a b c
 
-inversion :: Int -> V3 Double -> Double -> V3 Double -> Point
-inversion n point radius center =
-  fromV3 $ omega ^+^ center - k / quadrance vector *^ vector
+rootof2 :: Double
+rootof2 = sqrt 2
+
+inversion :: V3 Double -> Double -> V3 Double -> Point
+inversion point radius center =
+  fromV3 $ omega ^+^ center - radius*radius / quadrance vector *^ vector
   where
-  n' = fromIntegral n :: Double
-  a = if n==3 || n==4 then pi/n' else 2*pi/n'
-  omega = V3 (radius / sin(pi/2-a)) 0 0
-  s = V3 (radius * cos a) (radius * sin a) 0
-  k = quadrance (s ^-^ omega)
+  omega = V3 (radius * rootof2) 0 0
   vector = point ^-^ omega ^-^ center
 
 oneSphere :: Int -> V3 Double -> Double -> Double -> (Point,Double)
 oneSphere n center radius beta = (c, r)
   where
-  n' = fromIntegral n :: Double
-  coef = 1 / (1+sin(pi/n'))
+  sine = sin(pi / fromIntegral n)
+  coef = 1 / (1+sine)
   cradius = coef * radius
   pt = center ^+^ V3 (cradius * cos beta) (cradius * sin beta) 0
-  sRadius = coef * radius * sin(pi/n')
-  p1 = inversion n (pt ^+^ V3 sRadius 0 0) radius center
-  p2 = inversion n (pt ^+^ V3 0 sRadius 0) radius center
-  p3 = inversion n (pt ^+^ V3 (-sRadius) 0 0) radius center
-  p4 = inversion n (pt ^+^ V3 0 0 sRadius) radius center
-  ((cx,cy,_),r) = circumsphere p1 p2 p3 p4
-  a = if n==3 || n==4 then pi/n' else 2*pi/n'
-  c = (cx - 2*radius/sin(pi/2-a), cy, 0)
+  sRadius = cradius * sine
+  p1 = inversion (pt ^+^ V3 sRadius 0 0) radius center
+  p2 = inversion (pt ^+^ V3 0 sRadius 0) radius center
+  p3 = inversion (pt ^+^ V3 (-sRadius) 0 0) radius center
+  p4 = inversion (pt ^+^ V3 0 0 sRadius) radius center
+  ((cx,cy,_),r) = circumsphere' p1 p2 p3 p4
+  c = (cx - 2*rootof2*radius, cy, 0)
 
 chain :: Int -> Int -> Bool -> (Point,Double) -> [(Point,Double)]
 chain n frame clockwise (center,radius) =
