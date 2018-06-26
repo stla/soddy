@@ -129,7 +129,7 @@ keyboard rot1 rot2 rot3 zoom n phi depth frame anim spheres c _ = do
       writeIORef spheres (chains n' phi' depth' frame' True)
     'c' -> do
       n' <- get n
-      phi $~! (\x -> if x>0.1 then x-0.1 else x)
+      phi $~! (\x -> if x > -0.9 then x-0.1 else x)
       phi' <- get phi
       frame' <- get frame
       depth' <- get depth
