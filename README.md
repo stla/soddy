@@ -2,16 +2,16 @@
 
 ## Soddy hexlet and 3D Steiner chain
 
-![Imgur](https://i.imgur.com/5CW6GzE.png)
+![](gallery/soddy1.png)
 
-![gfycat](https://thumbs.gfycat.com/AgedUniformErmine-size_restricted.gif)
+![](gallery/soddy2.gif)
 
-![gfycat](https://thumbs.gfycat.com/TerribleWarmAlbatross-size_restricted.gif)
+![](gallery/soddy3.gif)
 
-![gfycat](https://thumbs.gfycat.com/PaltryEvilIberianlynx-size_restricted.gif)
+![](gallery/soddy4.gif)
 
-![Imgur](https://i.imgur.com/F68HXmC.png)
+![](gallery/soddy5.png)
 
-![gfycat](https://thumbs.gfycat.com/ShadowyOffensiveChamois-size_restricted.gif)
+![](gallery/soddy6.gif)
 
-![gfycat](https://thumbs.gfycat.com/HeftyTenderGrosbeak-size_restricted.gif)
+![](gallery/soddy7.gif)
